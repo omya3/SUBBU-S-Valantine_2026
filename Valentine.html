@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message For You</title>
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --dark-pink: #d81b60;
+            --whatsapp-green: #25D366;
+            --tape-color: rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            background-color: var(--soft-pink);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* --- SCRAPBOOK BACKGROUND --- */
+        .photo-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 10px;
+            opacity: 0.3;
+            transition: all 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.15);
+            width: 140px;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 60px;
+            height: 20px;
+            background: var(--tape-color);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+            z-index: 2;
+        }
+
+        .polaroid img { width: 100%; height: 120px; object-fit: cover; }
+
+        /* Scrapbook Randomness */
+        .polaroid:nth-child(1) { transform: rotate(-8deg); }
+        .polaroid:nth-child(2) { transform: rotate(6deg); }
+        .polaroid:nth-child(3) { transform: rotate(-4deg); }
+        .polaroid:nth-child(4) { transform: rotate(10deg); }
+        .polaroid:nth-child(5) { transform: rotate(-12deg); }
+        .polaroid:nth-child(6) { transform: rotate(5deg); }
+        .polaroid:nth-child(7) { transform: rotate(-7deg); }
+        .polaroid:nth-child(8) { transform: rotate(9deg); }
+        .polaroid:nth-child(9) { transform: rotate(-3deg); }
+
+        @media (min-width: 768px) {
+            .photo-background { display: block; position: fixed; }
+            .polaroid { width: 300px; padding: 12px 12px 40px 12px; position: absolute; }
+            .polaroid img { height: 240px; }
+            .p1 { top: 5%; left: 5%; transform: rotate(-10deg) !important; }
+            .p2 { top: 2%; right: 8%; transform: rotate(12deg) !important; }
+            .p3 { bottom: 5%; left: 5%; transform: rotate(8deg) !important; }
+            .p4 { bottom: 2%; right: 8%; transform: rotate(-15deg) !important; }
+            .p5 { top: 40%; left: 2%; transform: rotate(-5deg) !important; }
+            .p6 { top: 35%; right: 2%; transform: rotate(7deg) !important; }
+            .p7 { top: 20%; left: 30%; transform: rotate(2deg) !important; opacity: 0.5; }
+            .p8 { bottom: 20%; right: 30%; transform: rotate(-3deg) !important; opacity: 0.5; }
+            .p9 { top: 5%; left: 45%; transform: rotate(4deg) !important; opacity: 0.5; }
+        }
+
+        /* --- THE INVITATION CARD --- */
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem 1rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(216, 27, 96, 0.2);
+            text-align: center;
+            z-index: 10;
+            border: 2px solid #ffccd5;
+            width: 75%;
+            max-width: 400px;
+            transition: all 0.7s ease;
+            position: relative;
+        }
+
+        .container.revealed {
+            background: rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(10px);
+            border: none !important;
+            box-shadow: none !important;
+            padding: 1rem !important;
+            width: 90% !important;
+        }
+
+        .yay-text { 
+            font-family: 'Brush Script MT', cursive; 
+            font-size: 2.5rem; 
+            color: var(--dark-pink); 
+            margin: 0; 
+        }
+
+        h1 { color: var(--dark-pink); font-size: 1.4rem; margin-bottom: 8px; }
+        p { color: #444; font-size: 0.95rem; margin-bottom: 5px; }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            p { font-size: 1.1rem; }
+            .container { padding: 2.5rem 1.5rem; width: 80%; }
+        }
+
+        .buttons { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        @media (min-width: 480px) { .buttons { flex-direction: row; justify-content: center; } }
+
+        button, .wa-link {
+            padding: 10px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        #yesBtn { background-color: var(--primary-pink); color: white; width: 100%; max-width: 150px; }
+        #noBtn { background-color: #adb5bd; color: white; position: relative; z-index: 15; width: 100%; max-width: 150px; }
+
+        .wa-link { background-color: var(--whatsapp-green); color: white; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        #celebration { display: none; }
+
+        /* --- NEW HEART ANIMATION STYLES --- */
+        .confetti { position: fixed; width: 8px; height: 8px; z-index: 20; pointer-events: none; }
+        
+        .floating-heart {
+            position: fixed;
+            z-index: 25;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+            animation: floatUp 4s ease-in forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="myAudio" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="photo-background" id="gallery">
+        <div class="polaroid p1"><img src="IMG_7002.jpeg"></div>
+        <div class="polaroid p2"><img src="IMG_7009.jpeg"></div>
+        <div class="polaroid p3"><img src="IMG_7110.jpeg"></div>
+        <div class="polaroid p4"><img src="IMG_7300.jpeg"></div>
+        <div class="polaroid p5"><img src="IMG_7302.jpeg"></div>
+        <div class="polaroid p6"><img src="IMG_7438.jpeg"></div>
+        <div class="polaroid p7"><img src="IMG_7447.jpeg"></div>
+        <div class="polaroid p8"><img src="IMG_7550.jpeg"></div>
+        <div class="polaroid p9"><img src="IMG_7497.jpg"></div>
+    </div>
+
+    <div class="container" id="mainCard">
+        <div id="main-content">
+            <h1>Will you be my Valentine? ❤️</h1>
+            <p>I put a few of my favorite memories of us here... but I'd love to make many more with you.</p>
+            <div class="buttons">
+                <button id="yesBtn" onclick="celebrate()">YES!</button>
+                <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+            </div>
+        </div>
+
+        <div id="celebration">
+            <h1 class="yay-text">I Love You! 🥰</h1>
+            <p style="font-weight: bold; color: #000; margin-top: 5px;">I'm so excited!</p>
+            <p style="font-weight: bold; color: #000; margin-top: 5px;">I'm so excited! Let me know you saw this:</p>
+            <a href="https://wa.me/916300654096?text=YES!%20I'll%20be%20your%20Valentine!" 
+               class="wa-link" target="_blank">Confirm on WhatsApp</a>
+        </div>
+    </div>
+
+    <script>
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function createCelebration() {
+            // Confetti part
+            const colors = ['#ff4d6d', '#ffccd5', '#d81b60', '#ffffff'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '100vh';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    document.body.appendChild(confetti);
+                    confetti.animate([
+                        { transform: 'translateY(0)', opacity: 1 },
+                        { transform: `translate(${(Math.random()-0.5)*200}px, -105vh)`, opacity: 0 }
+                    ], { duration: 3000 });
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+
+            // HEART Part
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.classList.add('floating-heart');
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.bottom = '-10vh';
+                    // Random size for variety
+                    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    // Remove after animation finishes
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 200);
+            }
+        }
+
+        function celebrate() {
+            try { document.getElementById("myAudio").play(); } catch(e){}
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('celebration').style.display = 'block';
+            document.getElementById('mainCard').classList.add('revealed');
+            
+            const gallery = document.getElementById('gallery');
+            gallery.style.opacity = '1';
+            gallery.style.position = 'absolute'; 
+            gallery.style.pointerEvents = 'auto';
+
+            createCelebration();
+        }
+    </script>
+</body>
+</html>
